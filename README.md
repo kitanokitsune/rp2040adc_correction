@@ -78,13 +78,13 @@ Y-axis is ADC error and X-axis is ADC input (***not ADC readout***).
 [<img src="./images/Figure_5.png" width="300">](./images/Figure_5.png)  
 The red line shows the error with correction, and the cyan line shows the error without correction.
 
-## Better Correction by Individual Firmware
-If you can use individual firmware for each device, that means each device has its own customized firmware, you can use the following formula that gives better correction:
+## Better Correction by Individual Code
+If you can use individual code for each device, that means each device has its own customized firmware, you can use the following formula that gives better correction:
 
 `ADC_CORRECTED = ADC_READOUT + rp2040adc_err[ADC_READOUT]`
 
 Where `rp2040adc_err[]` is the array created by [*calc_err.py*](./actual_adc_data/data_rp2040), and has error data for specific device measured by yourself using [*measure.py*](./actual_adc_data). (Each device needs its own `rp2040adc_err[]`.)
-### Correction result by individual firmware
+### Correction result by individual code
 Y-axis is ADC error and X-axis is ADC input (***not ADC readout***).  
 [<img src="./images/Figure_6.png" width="300">](./images/Figure_6.png)
 [<img src="./images/Figure_7.png" width="300">](./images/Figure_7.png)
