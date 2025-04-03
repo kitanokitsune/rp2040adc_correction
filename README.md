@@ -84,6 +84,11 @@ If you can use individual code for each device, that means each device has its o
 `ADC_CORRECTED = ADC_READOUT + rp2040adc_err[ADC_READOUT]`
 
 Where `rp2040adc_err[]` is the array created by [*calc_err.py*](./actual_adc_data/data_rp2040), and has error data for specific device measured by yourself using [*measure.py*](./actual_adc_data). (Each device needs its own `rp2040adc_err[]`.)
+
+**Individual code templates:**  
++ C/C++ template ([template_rp2040adc.h](./template_rp2040adc.h))
++ Python template ([template_rp2040adc.py](./template_rp2040adc.py))
+
 ### Correction result by individual code
 Y-axis is ADC error and X-axis is ADC input (***not ADC readout***).  
 [<img src="./images/Figure_6.png" width="300">](./images/Figure_6.png)
