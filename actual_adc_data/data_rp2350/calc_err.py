@@ -49,14 +49,14 @@ STYLE='PYTHON'             # 'C' or 'PYTHON' (case insensitive)
 BOOL_ADJ_OFFSET=False      # True or False
 
 ### Read ADC data and calculate average error
-adcerr1 = np.array(cal_err(load_adc_data('rp2040adc1.csv')))
-adcerr2 = np.array(cal_err(load_adc_data('rp2040adc2.csv')))
-adcerr3 = np.array(cal_err(load_adc_data('rp2040adc3.csv')))
-adcerr4 = np.array(cal_err(load_adc_data('rp2040adc4.csv')))
-adcerr5 = np.array(cal_err(load_adc_data('rp2040adc5.csv')))
+adcerr1 = np.array(cal_err(load_adc_data('rp2350adc1.csv')))
+adcerr2 = np.array(cal_err(load_adc_data('rp2350adc2.csv')))
+adcerr3 = np.array(cal_err(load_adc_data('rp2350adc3.csv')))
+adcerr4 = np.array(cal_err(load_adc_data('rp2350adc4.csv')))
+adcerr5 = np.array(cal_err(load_adc_data('rp2350adc5.csv')))
 
 adcerr = (adcerr1+adcerr2+adcerr3+adcerr4+adcerr5)/5.0
-#adcerr = adcerr1
+#adcerr = adcerr5
 
 
 ### Fill dummy data near GND and VCC due to incompletion of OpAMP's output rail
@@ -65,9 +65,9 @@ for n in range(25):
 for n in range(4071, 4096):
     adcerr[n] = adcerr[4070]
 
-### adjust offset: adcerr[2047] = 0.0
+### adjust offset: adcerr[25] = 0.0
 if BOOL_ADJ_OFFSET:
-    d = adcerr[2047]
+    d = adcerr[25]
     for n in range(4096):
         adcerr[n] = adcerr[n] - d
 
@@ -78,8 +78,8 @@ for n in range(4096):
 
 ### Output correction factors in C/C++ or PYTHON code format
 if STYLE.upper() == 'PYTHON':
-    print('# correct_value = adc_readout + rp2040adc_err[adc_readout]')
-    print('rp2040adc_err = [')
+    print('# correct_value = adc_readout + rp2350adc_err[adc_readout]')
+    print('rp2350adc_err = [')
     for j in range(256):
         s = '    '
         for i in range(16):
@@ -88,8 +88,8 @@ if STYLE.upper() == 'PYTHON':
         print(s)
     print(']')
 elif STYLE.upper() == 'C':
-    print('/* correct_value = adc_readout + rp2040adc_err[adc_readout] */')
-    print('int8_t rp2040adc_err[] = {')
+    print('/* correct_value = adc_readout + rp2350adc_err[adc_readout] */')
+    print('int8_t rp2350adc_err[] = {')
     for j in range(256):
         s = '    '
         for i in range(16):

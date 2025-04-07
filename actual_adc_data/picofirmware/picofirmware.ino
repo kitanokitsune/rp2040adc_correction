@@ -13,6 +13,7 @@
 
 #include "pico/stdlib.h"
 #include "hardware/pwm.h"
+#include "hardware/adc.h"
 
 #define PWM_BIT      (15)  /* PWM_BIT in [12, 13, 14, 15, 16] */
 #define NUM_SAMPLES  (10)
@@ -63,9 +64,6 @@ volatile uint slice_num;
 /* -----------------------------------------------------------*/
 void setup() {
 
-  int count;
-  int blink_counter;
-
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
   pinMode(SW1_PIN, INPUT_PULLUP);
@@ -78,8 +76,8 @@ void setup() {
   pinMode(23, OUTPUT);
   digitalWrite(23, HIGH);
 #elif defined(ARDUINO_RASPBERRY_PI_PICO_W) || defined(ARDUINO_RASPBERRY_PI_PICO_2W)
-  pinMode(33, OUTPUT); /* WL_GPIO1 */
-  digitalWrite(33, HIGH); /* PFM:WL_GPIO1=LOW, PWM:WL_GPIO1=HIGH */
+  pinMode(LED_BUILTIN + 1, OUTPUT); /* WL_GPIO1 */
+  digitalWrite(LED_BUILTIN + 1, HIGH); /* PFM:WL_GPIO1=LOW, PWM:WL_GPIO1=HIGH */
 #endif
 
   /* Setup PWM */
@@ -92,6 +90,8 @@ void setup() {
   pwm_set_enabled(slice_num, true);
 
   /* Setup ADC */
+  adc_init();
+  adc_gpio_init(26);  /* A0 = GPIO26 */
   analogReadResolution(12);
 
   /* Setup USB serial device */
