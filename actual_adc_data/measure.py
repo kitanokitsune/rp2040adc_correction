@@ -1,31 +1,56 @@
 #!/usr/bin/env python
 # coding: UTF-8
 
-'''
-Receive ADC data from Raspberry Pi Pico by USB serial, and write it to a csv file.
-
-(1) Mount a Raspberry Pi Pico/W/2/2W device to ADC test board.
-(2) Connect the Pico device to Host-PC by USB.
-(3) Open "picofirmware.ino" with Arduino-IDE on the Host-PC.
-(4) Compile the firmware and download it to the device.
-(5) Run this python program on the Host-PC, then push START button (SW1) on the test board.
-(6) Wait until the program finishes. (It takes about 50 minutes).
-'''
-
 # ---------------------------------------------------------
 # Specify parameters if need.
 # ---------------------------------------------------------
 #COM='COM5'         # default: Autodetect Pico USB Serial
 #BAUD=115200        # default: 115200
-#OUTFILE='_a.csv'   # default: '_a.csv'
+#OUTFILE='_a.csv'   # default: auto numbering
 
 # ---------------------------------------------------------
 # import
 # ---------------------------------------------------------
 import serial
 from serial.tools import list_ports
-from time import time
-from sys import exit
+from time import time, sleep
+from sys import exit, stderr, argv
+argc = len(argv)-1
+import os.path
+import os
+
+
+# ---------------------------------------------------------
+# Print Usage
+# ---------------------------------------------------------
+def printusage(pname):
+    stderr.write('=== Host program to measure ADC errors on Raspberry Pi Pico/W/2/2W board ===\n'.format(pname))
+    stderr.write('(https://github.com/kitanokitsune/rp2040adc_correction)\n')
+    stderr.write('Usage: [python] {} FOLDER [-r]\n'.format(pname))
+    stderr.write('Options:\n')
+    stderr.write('    FOLDER  Path to a folder where ADC data are saved.\n')
+    stderr.write('            The folder must exist. ("." is acceptable)\n')
+    stderr.write('    -r      Decremental input (default=incremental)\n')
+
+
+# ---------------------------------------------------------
+# Check arguments
+# ---------------------------------------------------------
+if argc < 1:
+    printusage(argv[0])
+    exit(1)
+
+folder = os.path.normpath(argv[1])
+
+if not os.path.isdir(folder):
+    stderr.write('Error! "{}" is not existing folder!\n\n'.format(argv[1]))
+    printusage(argv[0])
+    exit(1)
+
+is_reverse = False
+if argc > 1:
+    if argv[2] == '-r':
+        is_reverse = True
 
 # ---------------------------------------------------------
 # Autodetect Pi Pico USB devide
@@ -50,11 +75,6 @@ try:
 except NameError:
     BAUD=115200
 
-try:
-    OUTFILE
-except NameError:
-    OUTFILE='_a.csv'
-
 # ---------------------------------------------------------
 # Open Serial Port
 # ---------------------------------------------------------
@@ -65,19 +85,60 @@ tstart = time()
 # ---------------------------------------------------------
 # Read from a Pico & Write to a file
 # ---------------------------------------------------------
+uart.write('n\n'.encode())
+SN = uart.readline().decode().strip()
+
+try:
+    OUTFILE
+except NameError:
+    folder = os.path.normpath(os.path.join(folder, SN))
+    if os.path.isdir(folder):
+        OUTFILE = ''
+        for n in range(1,100):
+            s = os.path.normpath(os.path.join(folder, '{}.csv'.format(n)))
+            if not os.path.exists(s):
+                OUTFILE = s
+                break
+        if not OUTFILE:
+            stderr.write('Error: exceed maximum number of files\n')
+            uart.close()
+            exit(1)
+    elif not os.path.exists(folder):
+        os.makedirs(folder)
+        OUTFILE = os.path.normpath(os.path.join(folder, '1.csv'))
+    else:
+        OUTFILE = '_a.csv'
+
+uart.write('l 1\n'.encode())
+dummy = uart.readline()
+
+if is_reverse:
+    pwm_duties = [ k for k in range(32767, -1, -1) ]
+else:
+    pwm_duties = [ k for k in range(32768) ]
+uart.write('p {}\n'.format(pwm_duties[0]).encode())
+sleep(1.0)
+dummy = uart.readline()
+
+
 with open(OUTFILE, 'w') as f:
-    while True:
-        data = uart.readline().decode()
-        if not data:
-            break
-        l = [ int(x) for x in data.split(',') ]
-        i = l[0]
-        f.write(data)
-        print(i)
+    f.write('# {}\n'.format(SN))
+    for duty in pwm_duties:
+        uart.write('p {}\n'.format(duty).encode())
+        dummy = uart.readline()
+        sleep(0.045) # wait for LPF settling time
+        f.write('{:5d},'.format(duty))
+        uart.write('a 12\n'.encode())
+        f.write((uart.readline().decode()))
+        stderr.write('{:5d}\n'.format(duty))
 
+uart.write('l 0\n'.encode())
+dummy = uart.readline()
 uart.close()
+stderr.write('----------------------------------------\n')
+stderr.write(' {}\n'.format(OUTFILE))
+stderr.write('----------------------------------------\n')
 
-# Show elapsed time
 elapsed = int(time() - tstart + 0.5)
 h = int(elapsed / 3600.0)
 m = int((elapsed % 3600) / 60.0)
