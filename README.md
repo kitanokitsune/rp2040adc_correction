@@ -40,24 +40,22 @@ def rp2040adc_correction(d):
       d     : 12 bit ADC readout (0~4095)
       return: corrected ADC value
     '''
-    if d >= 4082:
+    if d >= 4081:
         y = 4095
-    elif d >= 4022:
-        y = d + 13
     elif d >= 3711:
         y = d + 14
     elif d >= 3584:
         y = d + 15
     elif d == 3583:
         y = 3583 + 10
-    elif d >= 3454:
+    elif d >= 3455:
         y = d + 5
     elif d >= 2943:
         y = d + 6
     elif d >= 2560:
         y = d + 7
     elif d == 2559:
-        y = 2559 + 2
+        y = 2559 + 3
     elif d >= 2431:
         y = d - 2
     elif d >= 2048:
@@ -97,49 +95,45 @@ def rp2350adc_correction(d):
     '''
     if d >= 4079:
         y = 4095
-    elif d >= 4070:
+    elif d >= 3905:
         y = d + 16
-    elif d >= 3840:
+    elif d >= 3839:
         y = d + 15
-    elif d >= 3632:
+    elif d >= 3489:
         y = d + 14
-    elif d >= 3328:
+    elif d >= 3327:
         y = d + 13
-    elif d >= 3244:
+    elif d >= 3105:
         y = d + 12
-    elif d >= 3200:
+    elif d >= 2816:
         y = d + 11
-    elif d >= 3152:
-        y = d + 12
-    elif d >= 2848:
-        y = d + 11
-    elif d >= 2784:
+    elif d >= 2783:
         y = d + 10
-    elif d >= 2560:
+    elif d >= 2559:
         y = d + 9
-    elif d >= 2306:
+    elif d >= 2304:
         y = d + 10
     elif d >= 2144:
         y = d + 9
-    elif d >= 2048:
+    elif d >= 2047:
         y = d + 8
-    elif d >= 1839:
+    elif d >= 1824:
         y = d + 9
-    elif d >= 1776:
+    elif d >= 1792:
         y = d + 8
-    elif d >= 1536:
+    elif d >= 1535:
         y = d + 7
     elif d >= 1280:
         y = d + 8
-    elif d >= 1092:
+    elif d >= 1089:
         y = d + 7
-    elif d >= 864:
+    elif d >= 833:
         y = d + 6
-    elif d >= 768:
+    elif d >= 767:
         y = d + 5
-    elif d >= 593:
+    elif d >= 576:
         y = d + 4
-    elif d >= 335:
+    elif d >= 319:
         y = d + 3
     elif d >= 255:
         y = d + 2
@@ -154,11 +148,11 @@ def rp2350adc_correction(d):
 ## Correction result by the general-purpose code
 Y-axis is ADC error and X-axis is ADC input (***not ADC readout***).
 ### RP2040 ADC correction result by the general-purpose code
-[<img src="./images/Figure_1.png" width="300">](./images/Figure_1.png)
-[<img src="./images/Figure_2.png" width="300">](./images/Figure_2.png)
-[<img src="./images/Figure_3.png" width="300">](./images/Figure_3.png)
-[<img src="./images/Figure_4.png" width="300">](./images/Figure_4.png)
-[<img src="./images/Figure_5.png" width="300">](./images/Figure_5.png)  
+[<img src="./images/rp2040_gc1.png" width="300">](./images/rp2040_gc1.png)
+[<img src="./images/rp2040_gc2.png" width="300">](./images/rp2040_gc2.png)
+[<img src="./images/rp2040_gc3.png" width="300">](./images/rp2040_gc3.png)
+[<img src="./images/rp2040_gc4.png" width="300">](./images/rp2040_gc4.png)
+[<img src="./images/rp2040_gc5.png" width="300">](./images/rp2040_gc5.png)  
 The red line shows the error with correction, and the cyan line shows the error without correction.
 
 ### RP2350 ADC correction result by the general-purpose code
@@ -184,11 +178,11 @@ Where `rp2040adc_err[]` is the array created by [*calc_err.py*](./actual_adc_dat
 ## Calibration result by individual code
 Y-axis is ADC error and X-axis is ADC input (***not ADC readout***).
 ### RP2040 ADC calibration result by individual code
-[<img src="./images/Figure_6.png" width="300">](./images/Figure_6.png)
-[<img src="./images/Figure_7.png" width="300">](./images/Figure_7.png)
-[<img src="./images/Figure_8.png" width="300">](./images/Figure_8.png)
-[<img src="./images/Figure_9.png" width="300">](./images/Figure_9.png)
-[<img src="./images/Figure_a.png" width="300">](./images/Figure_a.png)  
+[<img src="./images/rp2040_ic1.png" width="300">](./images/rp2040_ic1.png)
+[<img src="./images/rp2040_ic2.png" width="300">](./images/rp2040_ic2.png)
+[<img src="./images/rp2040_ic3.png" width="300">](./images/rp2040_ic3.png)
+[<img src="./images/rp2040_ic4.png" width="300">](./images/rp2040_ic4.png)
+[<img src="./images/rp2040_ic5.png" width="300">](./images/rp2040_ic5.png)  
 The red line shows the error with correction, and the cyan line shows the error without correction.
 
 ### RP2350 ADC calibration result by individual code

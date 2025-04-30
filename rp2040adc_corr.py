@@ -8,24 +8,22 @@ def rp2040adc_correction(d):
       d     : 12 bit ADC readout (0~4095)
       return: corrected ADC value
     '''
-    if d >= 4082:
+    if d >= 4081:
         y = 4095
-    elif d >= 4022:
-        y = d + 13
     elif d >= 3711:
         y = d + 14
     elif d >= 3584:
         y = d + 15
     elif d == 3583:
         y = 3583 + 10
-    elif d >= 3454:
+    elif d >= 3455:
         y = d + 5
     elif d >= 2943:
         y = d + 6
     elif d >= 2560:
         y = d + 7
     elif d == 2559:
-        y = 2559 + 2
+        y = 2559 + 3
     elif d >= 2431:
         y = d - 2
     elif d >= 2048:
