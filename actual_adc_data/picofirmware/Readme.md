@@ -1,5 +1,5 @@
 # About this Firmware
-A Raspberry Pi Pico/W/2/2W firmware intended for measuring ADC error with [this circuit](../adc_test_board_schematic.pdf).  
+A Raspberry Pi Pico/W/2/2W firmware intended for measuring ADC error using [this circuit](../adc_test_board_schematic.pdf) and [this program](../measure.py).  
 If you send a command via the USB-SERIAL (UART), then you will receive its response via the USB-SERIAL.
 
 ## Command List
